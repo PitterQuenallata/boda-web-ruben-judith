@@ -1033,6 +1033,8 @@ button {
   align-items: center;
   justify-content: center;
   padding: 3rem;
+  /* Permite scroll vertical pero deja el swipe horizontal para cambiar de foto */
+  touch-action: pan-y;
 }
 
 .lightbox__img {
@@ -1370,15 +1372,28 @@ button {
   flex-direction: column;
   gap: 0.15rem;
   margin-top: clamp(3rem, 10vh, 6rem);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   letter-spacing: 0.08em;
   color: rgba(251, 247, 241, 0.78);
 }
 
-.footer__credito a {
-  color: var(--rosa-claro);
+.footer__credito strong {
   font-weight: 600;
+  font-size: 1rem;
+  color: var(--marfil);
+  letter-spacing: 0.12em;
+}
+
+.footer__credito a {
+  color: var(--dorado);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
   text-decoration: none;
+}
+
+.footer__credito a:hover {
+  text-decoration: underline;
 }
 
 /* ---------- Pétalos / botón música ---------- */

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GALERIA } from '../datos'
 import { IconoCerrar } from './iconos/Iconos'
 import Cargando from './Cargando'
@@ -13,6 +13,37 @@ const FOTOS_ALBUM = GALERIA.map((f) => f.src)
 export default function Album({ onVolver }) {
   const [activa, setActiva] = useState(null)
   const { listo, progreso } = usePrecarga(FOTOS_ALBUM)
+  // Inicio del gesto táctil (swipe) en el lightbox
+  const toqueX = useRef(null)
+  // Marca que el último gesto fue swipe, para que el click sintético
+  // posterior no cierre el lightbox justo después de cambiar de foto
+  const fueSwipe = useRef(false)
+
+  const siguiente = () => setActiva((a) => (a + 1) % GALERIA.length)
+  const anterior = () => setActiva((a) => (a - 1 + GALERIA.length) % GALERIA.length)
+
+  const onTouchStart = (e) => {
+    toqueX.current = e.touches[0].clientX
+  }
+
+  // Deslizar con el dedo en móviles: izquierda = siguiente, derecha = anterior
+  const onTouchEnd = (e) => {
+    if (toqueX.current === null) return
+    const delta = e.changedTouches[0].clientX - toqueX.current
+    toqueX.current = null
+    if (Math.abs(delta) < 40) return
+    fueSwipe.current = true
+    if (delta < 0) siguiente()
+    else anterior()
+  }
+
+  const cerrar = () => {
+    if (fueSwipe.current) {
+      fueSwipe.current = false
+      return
+    }
+    setActiva(null)
+  }
 
   useEffect(() => {
     const onKey = (e) => {
@@ -65,7 +96,14 @@ export default function Album({ onVolver }) {
       </div>
 
       {activa !== null && (
-        <div className="lightbox" role="dialog" aria-modal="true" onClick={() => setActiva(null)}>
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          onClick={cerrar}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
           <button type="button" className="lightbox__cerrar" aria-label="Cerrar">
             <IconoCerrar />
           </button>
@@ -75,7 +113,7 @@ export default function Album({ onVolver }) {
             aria-label="Anterior"
             onClick={(e) => {
               e.stopPropagation()
-              setActiva((activa - 1 + GALERIA.length) % GALERIA.length)
+              anterior()
             }}
           >
             ‹
@@ -92,7 +130,7 @@ export default function Album({ onVolver }) {
             aria-label="Siguiente"
             onClick={(e) => {
               e.stopPropagation()
-              setActiva((activa + 1) % GALERIA.length)
+              siguiente()
             }}
           >
             ›
