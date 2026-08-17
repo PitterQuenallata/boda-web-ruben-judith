@@ -1,0 +1,21 @@
+# Contexto de build = blakor/. Solo se necesitan estas dos carpetas:
+*
+!boda-panel/
+!boda-api/
+
+# Dentro de boda-panel no hacen falta (material fuente pesado / artefactos):
+boda-panel/node_modules/
+boda-panel/dist/
+boda-panel/fotos-elegidas-optimizadas/
+boda-panel/media-originales/
+boda-panel/recursosNuevos/
+boda-panel/audio.jpeg
+boda-panel/preseleccion.jpg
+
+# Artefactos del backend:
+boda-api/node_modules/
+boda-api/uploads/
+
+**/.DS_Store
+**/.env
+**/.git/

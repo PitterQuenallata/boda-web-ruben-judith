@@ -1,0 +1,16 @@
+{
+  "name": "boda-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "API + hosting de la invitación de boda (Rubén & Judith): confirmaciones y fotos de invitados con MySQL.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.3"
+  }
+}
