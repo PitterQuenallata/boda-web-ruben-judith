@@ -110,6 +110,8 @@ app.get('/api/confirmaciones', async (req, res) => {
 
 // --- Fotos de invitados ---
 const MAX_FOTOS_BYTES = 10 * 1024 * 1024
+// Solo fotos estándar: nada de videos, PDFs ni HEIC (no se ven en todos los navegadores)
+const TIPOS_FOTO = ['image/jpeg', 'image/png', 'image/webp']
 
 const almacenamiento = multer.diskStorage({
   destination: UPLOADS_DIR,
@@ -122,8 +124,8 @@ const subida = multer({
   storage: almacenamiento,
   limits: { fileSize: MAX_FOTOS_BYTES, files: 10 },
   fileFilter: (req, archivo, cb) => {
-    if (archivo.mimetype.startsWith('image/')) return cb(null, true)
-    cb(new Error('Solo se permiten imágenes'))
+    if (TIPOS_FOTO.includes(archivo.mimetype)) return cb(null, true)
+    cb(new Error('Solo se permiten fotos JPEG, PNG o WebP'))
   },
 })
 
@@ -140,6 +142,20 @@ app.get('/api/fotos', async (req, res) => {
     'SELECT id, nombre, archivo, creado FROM fotos_invitados ORDER BY creado DESC',
   )
   res.json(filas.map((fila) => ({ ...fila, url: `/uploads/${fila.archivo}` })))
+})
+
+// Vaciar datos de prueba: borra confirmaciones, fotos y archivos subidos.
+// Mismo código del panel (x-codigo-panel).
+app.post('/api/admin/vaciar', async (req, res) => {
+  if (!codigoValido(req.get('x-codigo-panel'))) {
+    return res.status(401).json({ error: 'Código incorrecto' })
+  }
+  await db.query('TRUNCATE TABLE confirmaciones')
+  await db.query('TRUNCATE TABLE fotos_invitados')
+  for (const archivo of fs.readdirSync(UPLOADS_DIR)) {
+    fs.unlinkSync(path.join(UPLOADS_DIR, archivo))
+  }
+  res.json({ ok: true })
 })
 
 // --- Estáticos: fotos subidas + frontend compilado (Vite -> public/) ---

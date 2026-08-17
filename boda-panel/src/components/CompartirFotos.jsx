@@ -3,6 +3,8 @@ import { subirFotosInvitados } from '../api'
 
 const MAX_FOTOS = 5
 const MAX_BYTES = 10 * 1024 * 1024
+// Solo fotos estándar (JPEG/PNG/WebP): nada de videos ni PDFs
+const TIPOS_OK = ['image/jpeg', 'image/png', 'image/webp']
 
 export default function CompartirFotos() {
   const inputRef = useRef(null)
@@ -14,11 +16,11 @@ export default function CompartirFotos() {
 
   const seleccionar = (event) => {
     const elegidas = Array.from(event.target.files || []).slice(0, MAX_FOTOS)
-    const invalidas = elegidas.some((foto) => !foto.type.startsWith('image/') || foto.size > MAX_BYTES)
+    const invalidas = elegidas.some((foto) => !TIPOS_OK.includes(foto.type) || foto.size > MAX_BYTES)
 
     if (invalidas) {
       setArchivos([])
-      setMensaje('Cada archivo debe ser una imagen de hasta 10 MB.')
+      setMensaje('Solo fotos JPEG, PNG o WebP de hasta 10 MB cada una.')
       return
     }
 
@@ -65,7 +67,7 @@ export default function CompartirFotos() {
           ref={inputRef}
           className="compartir-fotos__archivo"
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={seleccionar}
         />

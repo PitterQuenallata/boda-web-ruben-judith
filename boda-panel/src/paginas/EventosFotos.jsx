@@ -3,6 +3,8 @@ import { obtenerFotos, subirFotosInvitados } from '../api'
 
 const MAX_FOTOS = 10
 const MAX_BYTES = 10 * 1024 * 1024
+// Solo fotos estándar (JPEG/PNG/WebP): nada de videos ni PDFs
+const TIPOS_OK = ['image/jpeg', 'image/png', 'image/webp']
 
 // /eventsfotos — página pública para que los invitados suban y vean
 // las fotos durante la boda.
@@ -26,11 +28,11 @@ export default function EventosFotos() {
 
   const seleccionar = (event) => {
     const elegidas = Array.from(event.target.files || []).slice(0, MAX_FOTOS)
-    const invalidas = elegidas.some((foto) => !foto.type.startsWith('image/') || foto.size > MAX_BYTES)
+    const invalidas = elegidas.some((foto) => !TIPOS_OK.includes(foto.type) || foto.size > MAX_BYTES)
 
     if (invalidas) {
       setArchivos([])
-      setMensaje('Cada archivo debe ser una imagen de hasta 10 MB.')
+      setMensaje('Solo fotos JPEG, PNG o WebP de hasta 10 MB cada una.')
       return
     }
 
@@ -77,7 +79,7 @@ export default function EventosFotos() {
           ref={inputRef}
           className="compartir-fotos__archivo"
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={seleccionar}
         />
@@ -106,6 +108,11 @@ export default function EventosFotos() {
           ))
         )}
       </section>
+
+      <footer className="pagina__credito">
+        Invitación digital creada por <strong>Pitter Quenallata</strong>
+        <a href="https://blakor.tech" target="_blank" rel="noopener noreferrer">blakor.tech</a>
+      </footer>
     </main>
   )
 }

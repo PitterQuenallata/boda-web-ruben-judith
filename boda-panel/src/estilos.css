@@ -2046,3 +2046,32 @@ button {
   color: var(--azul-oscuro);
   text-align: center;
 }
+
+/* Crédito al pie de las páginas extra (fondo claro) */
+.pagina__credito {
+  margin-top: 4rem;
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--azul);
+}
+
+.pagina__credito strong {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--azul-oscuro);
+  letter-spacing: 0.12em;
+}
+
+.pagina__credito a {
+  display: inline-block;
+  margin-left: 0.4rem;
+  color: var(--dorado-oscuro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+}
+
+.pagina__credito a:hover {
+  text-decoration: underline;
+}
