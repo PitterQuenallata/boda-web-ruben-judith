@@ -9,8 +9,10 @@ services:
       DB_USER: boda
       DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en el archivo .env}
       CODIGO_PANEL: ${CODIGO_PANEL:-rubenyjudith2026}
-    ports:
-      - "3000:3000"
+    # Sin mapeo de puertos: en Dokploy el tráfico entra por Traefik con el
+    # dominio configurado (puerto interno 3000). El 3000 del host lo usa Dokploy.
+    expose:
+      - "3000"
     volumes:
       - fotos:/app/uploads
     depends_on:
